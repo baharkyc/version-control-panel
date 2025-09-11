@@ -17,7 +17,6 @@ A full-stack configuration management panel built with Vue 3, Pinia, Tailwind CS
   - [Backend Example `.env`](#backend-example-env)
   - [Frontend Example `.env`](#frontend-example-env)
 - [Testing](#testing)
-- [Live Demo](#live-demo)
 
 ---
 
