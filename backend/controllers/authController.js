@@ -6,14 +6,17 @@ const { admin } = require("../firebase.js");
 //@access public
 const signInUser = asyncHandler(async (req, res) => {
 
+  //retrieve ID token from request body
   const { idToken } = req.body;
 
+  //throw error when there is no ID token
   if (!idToken) {
     res.status(400);
     throw new Error("ID token is required.");
   }
 
   try {
+    //verify Firebase ID token
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const { uid, email } = decodedToken;
 
@@ -22,7 +25,9 @@ const signInUser = asyncHandler(async (req, res) => {
       uid,
       email,
     });
+
   } catch (error) {
+    //token verification failed
     res.status(401);
     throw new Error("Token invalid or expired.");
   }
