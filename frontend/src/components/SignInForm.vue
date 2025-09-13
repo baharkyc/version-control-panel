@@ -4,15 +4,18 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useAuthStore } from '../store/auth';
 
+//emits success to parent when login is successful
 const emit = defineEmits(['login-success'])
 
 const authStore = useAuthStore();
 
+//reactive state for form input
 const formData = reactive({
   email: '',
   password: ''
 })
 
+//reactive state for validation errors
 const errors = reactive({
   email: '',
   password: '',
@@ -21,6 +24,7 @@ const errors = reactive({
 const showPassword = ref(false)
 const isSubmitting = ref(false)
 
+//form valdiation
 const validateForm = () => {
   let isValid = true
   
@@ -48,6 +52,7 @@ const validateForm = () => {
   return isValid
 }
 
+//handle form submission
 const handleSubmit = async () => {
 
   if (!validateForm()) return
@@ -55,21 +60,26 @@ const handleSubmit = async () => {
   isSubmitting.value = true
   
   try {
+    //Firebase login
     const userCredential = await signInWithEmailAndPassword( auth, formData.email, formData.password);
     
+    //retrieve firebase ID token
     const idToken = await userCredential.user.getIdToken();
 
+    //store user info Pinia store
     authStore.login({
       email: formData.email,
       token: idToken,
       uid: userCredential.user.uid
     })
 
+    //emit login success event
     emit('login-success', {
       email: formData.email,
       token: idToken      
     })
 
+    //reset form
     formData.email = '';
     formData.password = '';
     

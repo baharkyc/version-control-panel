@@ -2,22 +2,26 @@
 import { ref, watch, reactive } from 'vue';
 import { API_BASE_URL } from "../constants";
 
+//card being edited and auth token
 const props = defineProps({
   card: Object,
   token: String
 });
 
+//emits close modal, notify parent when saved
 const emit = defineEmits(['close', 'saved']);
 
 const defaultValue = ref('');
 const countryOverrides = reactive({}); 
 
+//sync from values when card changes
 watch(
   () => props.card,
   (newCard) => {
     if (newCard) {
         defaultValue.value = newCard.countryVersion?.default || '';
 
+        //reset and fill overrides
         Object.keys(countryOverrides).forEach(key => delete countryOverrides[key]);
 
         const version = newCard.countryVersion || {};
@@ -32,7 +36,7 @@ watch(
   { immediate: true }
 );
 
-
+//add new country override
 function addCountry() {
   const newCountry = prompt('Enter country code (e.g. TR)');
   if (newCountry) {
@@ -43,10 +47,13 @@ function addCountry() {
   }
 }
 
+//remove existing country override
 function removeCountry(country) {
   delete countryOverrides[country];
 }
 
+
+//save updated card with country versions
 async function save() {
     
   const newCountryVersion = {
@@ -91,6 +98,7 @@ async function save() {
 
 
 <template>
+  <!--Modal Content-->
   <div
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     @click.self="$emit('close')"

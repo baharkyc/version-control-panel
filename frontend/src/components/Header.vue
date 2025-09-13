@@ -11,6 +11,7 @@ const authStore = useAuthStore();
 
 const isLoggedIn = computed(() => !!authStore.user);
 
+//close dropdown when clicked outside
 const handleClickOutside = (event) => {
   if (!event.target.closest('.relative')) {
     dropdownOpen.value = false
@@ -24,6 +25,7 @@ const handleLogout = () => {
   router.push('/signin');
 }
 
+//add/remove click listener on mount/unmount
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
@@ -35,6 +37,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <!--Sticky Header-->
   <header class="sticky top-0 z-50 bg-background-color">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-background-color">
       <div class="flex justify-between items-center h-16">
@@ -50,7 +53,7 @@ onUnmounted(() => {
           </router-link>
         </div>
         
-        <!-- User Dropdown -->
+        <!-- User Dropdown Menu-->
         <div class="relative">
           <button 
             @click="dropdownOpen = !dropdownOpen"
@@ -62,6 +65,7 @@ onUnmounted(() => {
               </svg>
             </div>
             
+            <!--Dropdown Toggle Icon-->
             <svg 
               class="hidden md:block w-4 h-4 transition-transform duration-200"
               :class="{ 'rotate-180': dropdownOpen }"
@@ -81,7 +85,7 @@ onUnmounted(() => {
             </svg>
           </button>
           
-          <!-- Dropdown Menu -->
+          <!-- Dropdown Menu Content-->
           <transition>
             <div 
               v-if = "dropdownOpen"
@@ -122,6 +126,7 @@ onUnmounted(() => {
                   </template>
                   
                   <template v-else>
+                    <!--Login Link-->
                     <router-link 
                       to="/signin"
                       @click="dropdownOpen = false"
