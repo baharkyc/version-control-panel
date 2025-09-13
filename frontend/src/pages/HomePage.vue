@@ -6,6 +6,8 @@ import { API_BASE_URL } from "../constants";
 import AddParameterForm from '../components/AddParameterForm.vue';
 import CountryVersionEditModal from '../components/CountryVersionEditModal.vue';
 
+//Auth Setup
+//retrieve stored user and token from local storage
 const storedUser = JSON.parse(localStorage.getItem('user'));
 const token = storedUser?.token;
 
@@ -18,6 +20,8 @@ const editingCard = ref(null);
 const showCountryModal = ref(false);
 const selectedCardForCountry = ref(null);
 
+//API Calls
+//fetch all parameters(cards) from backend
 const fetchCards = async () => {
   try {
     const res = await fetch(`${API_BASE_URL}/api/parameters`, {
@@ -37,14 +41,17 @@ const fetchCards = async () => {
   }
 };
 
+//reset form state (exit editing mode)
 const resetForm = () => {
   editingCard.value = null;
 };
 
+//start editing a card
 const handleEdit = (card) => {
   editingCard.value = card;
 };
 
+//delete a card from backend
 const handleDelete = async (id) => {
   try {
     const res = await fetch(`${API_BASE_URL}/api/parameters/${id}`, {
@@ -66,6 +73,7 @@ const handleDelete = async (id) => {
   }
 };
 
+//add a new card(new parameter)
 const addCard = async (formValues) => {
   if (!formValues.key || !formValues.value || !formValues.description) return;
 
@@ -97,6 +105,7 @@ const addCard = async (formValues) => {
   }
 };
 
+//update existing card
 const updateCard = async (formValues) => {
 
   if (!editingCard.value) return;
@@ -138,6 +147,7 @@ const updateCard = async (formValues) => {
   }
 };
 
+//handle form submission 
 const handleFormSubmit = async (formValues) => {
   if (editingCard.value) {
     await updateCard(formValues);
@@ -146,16 +156,19 @@ const handleFormSubmit = async (formValues) => {
   };
 };
 
+//cancel form editing
 const handleFormCancel = () => {
   resetForm();
 };
 
+//open modal for editing country specific versions
 const handleEditCountry = (card) => {
 
   selectedCardForCountry.value = JSON.parse(JSON.stringify(card));
   showCountryModal.value = true;
 }
 
+//handle updated country specific parameter
 const handleCountrySaved = (updatedCard) => {
 
   const index = cards.value.findIndex(c => c.id === updatedCard.id);
@@ -168,7 +181,7 @@ const handleCountrySaved = (updatedCard) => {
   showCountryModal.value = false;
 };
 
-
+//fetch cards from backend on mount
 onMounted(() => {
   fetchCards();
 });
@@ -179,7 +192,7 @@ onMounted(() => {
   <div class="flex flex-col">
     <Header></Header>
 
-    <!-- Panel -->
+    <!-- Parameters List (Cards)-->
     <div class="p-8">
       <div class="grid grid-cols-1 px-12 gap-8 md:pt-0 md:gap-2">
         <div
@@ -203,7 +216,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Add / Edit Form -->
+    <!-- Add / Edit Parameter Form -->
     <div class="px-20 pb-16">
       <AddParameterForm
         :editingCard="editingCard"
@@ -212,6 +225,7 @@ onMounted(() => {
       />
     </div>
 
+    <!--Country Version Modal-->
     <CountryVersionEditModal
       v-if="showCountryModal"
       :card="selectedCardForCountry"

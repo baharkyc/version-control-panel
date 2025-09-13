@@ -4,8 +4,10 @@ import Header from '../components/Header.vue';
 import SignInForm from '../components/SignInForm.vue';
 import { useRouter } from 'vue-router';
 
+//router instance
 const router = useRouter();
 
+//handle successful login event from SignInForm
 const onSuccess = (payload) => {
     alert('Sign in successful!')
 
